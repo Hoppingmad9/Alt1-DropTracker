@@ -7,7 +7,7 @@ window.setTimeout(function () {
   const pollIntervalMs = 250;
 
   const alertSounds = {
-    bell: "/assets/bell.wav",
+    bell: "./assets/bell.wav",
   };
 
   let missedDropAlertAudio = null;
