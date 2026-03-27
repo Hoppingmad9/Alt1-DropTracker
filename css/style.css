@@ -252,7 +252,7 @@ label {
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 10px;
-  padding-bottom: 8px;
+  padding-bottom: 40px;
 }
 
 #dropsTable {
