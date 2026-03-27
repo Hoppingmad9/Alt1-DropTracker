@@ -347,7 +347,8 @@ window.setTimeout(function () {
         candidates = amountMatches;
       }
     }
-
+    console.log("PET PARSED:", parsed);
+    console.log("PENDING DROPS:", Array.from(pendingDrops.values()));
     const match = candidates.sort(function (a, b) {
       return a.createdAt - b.createdAt;
     })[0];
