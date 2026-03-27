@@ -257,7 +257,7 @@ window.setTimeout(function () {
 
   function parseChatLine(line) {
     const beamMatch = line.match(
-      /^\[(\d{2}:\d{2}:\d{2})\]\s+A golden beam shines over one of your items\.\s+You receive:\s+(\d+)(?:\s*x)?\s+(.+?)\.?$/i
+      /^\[(\d{2}:\d{2}:\d{2})\]\s+A golden beam shines over one of your items\.\s+You receive:\s+(\d+)(?:\s*x)?\s+(.+?)\.?$/i,
     );
 
     if (beamMatch) {
@@ -270,7 +270,7 @@ window.setTimeout(function () {
     }
 
     const petMatch = line.match(
-      /^\[(\d{2}:\d{2}:\d{2})\]\s+Your legendary pet finds:\s+(.+?)\.?$/i
+      /^\[(\d{2}:\d{2}:\d{2})\]\s+Your legendary pet finds:\s+(.+?)(?:\s+x\s+(\d+)|\s*\((\d+)\))?\.?$/i,
     );
 
     if (petMatch) {
@@ -278,6 +278,11 @@ window.setTimeout(function () {
         kind: "pet",
         timestamp: petMatch[1],
         itemName: cleanItemName(petMatch[2]),
+        amount: petMatch[3]
+          ? parseInt(petMatch[3], 10)
+          : petMatch[4]
+            ? parseInt(petMatch[4], 10)
+            : null,
       };
     }
     console.log("PARSE FAILED:", JSON.stringify(line));
