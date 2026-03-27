@@ -221,6 +221,18 @@ label {
   table-layout: fixed;
 }
 
+#dropsTable .col-time {
+  width: 72px;
+}
+
+#dropsTable .col-status {
+  width: 150px;
+}
+
+#dropsTable .col-item {
+  width: auto;
+}
+
 .modal {
   position: fixed;
   inset: 0;

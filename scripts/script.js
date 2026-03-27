@@ -390,7 +390,7 @@ window.setTimeout(function () {
       return;
     }
 
-    entry.status = "Alerted - not picked up";
+    entry.status = "Alerted";
     entry.alertedAt = new Date().toLocaleTimeString("en-GB", { hour12: false });
     pendingDrops.delete(id);
 
@@ -493,14 +493,14 @@ window.setTimeout(function () {
       return;
     }
 
-    if (drop.status !== "Alerted - not picked up") {
+    if (drop.status !== "Alerted") {
       return;
     }
 
     pendingDrops.delete(id);
 
     updateTrackedDrop(id, {
-      status: "Picked up (manual)",
+      status: "Picked up",
       resolvedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
     });
 
@@ -556,14 +556,12 @@ window.setTimeout(function () {
 
     rows.forEach(function (drop) {
       const tr = document.createElement("tr");
-      const isAlerted = drop.status === "Alerted - not picked up";
+      const isAlerted = drop.status === "Alerted";
 
       tr.innerHTML = `
-        <td>${escapeHtml(drop.seenAt || "")}</td>
-        <td>${escapeHtml(drop.itemName || "")}</td>
-        <td>${escapeHtml(String(drop.amount || ""))}</td>
-        <td>${escapeHtml(drop.status || "")}</td>
-        <td>${escapeHtml(drop.source || "")}</td>
+        <td class="col-time">${escapeHtml(drop.seenAt || "")}</td>
+        <td class="col-item">${escapeHtml(drop.itemName || "")}</td>
+        <td class="col-status">${escapeHtml(drop.status || "")}</td>
       `;
 
       if (isAlerted) {
