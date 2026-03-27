@@ -24,6 +24,7 @@ window.setTimeout(function () {
     trackMode: "all", // "all" | "watchlist"
     watchlistItems: [],
     alertSeconds: 8,
+    alertVolume: 70,
     playSound: true,
     showResolved: true,
   };
@@ -65,6 +66,7 @@ window.setTimeout(function () {
     trackModeWatchlist: document.getElementById("trackModeWatchlist"),
     watchlistItems: document.getElementById("watchlistItems"),
     alertSeconds: document.getElementById("alertSeconds"),
+    alertVolume: document.getElementById("alertVolume"),
     playSound: document.getElementById("playSound"),
     showResolved: document.getElementById("showResolved"),
   };
@@ -458,7 +460,12 @@ window.setTimeout(function () {
 
       missedDropAlertAudio = new Audio(alertSounds.bell);
       missedDropAlertAudio.loop = true;
-      missedDropAlertAudio.volume = 0.7;
+      missedDropAlertAudio.volume = clampNumber(
+        Number(settings.alertVolume) / 100,
+        0,
+        1,
+        0.7
+      );
 
       const playPromise = missedDropAlertAudio.play();
       if (playPromise && typeof playPromise.catch === "function") {
@@ -622,6 +629,7 @@ window.setTimeout(function () {
     els.trackModeWatchlist.checked = settings.trackMode === "watchlist";
     els.watchlistItems.value = settings.watchlistItems.join("\n");
     els.alertSeconds.value = String(settings.alertSeconds);
+    els.alertVolume.value = String(settings.alertVolume);
     els.playSound.checked = !!settings.playSound;
     els.showResolved.checked = !!settings.showResolved;
   }
@@ -637,6 +645,7 @@ window.setTimeout(function () {
         })
         .filter(Boolean),
       alertSeconds: clampNumber(parseInt(els.alertSeconds.value, 10), 1, 60, 8),
+      alertVolume: clampNumber(parseInt(els.alertVolume.value, 10), 0, 100, 70),
       playSound: els.playSound.checked,
       showResolved: els.showResolved.checked,
     };
