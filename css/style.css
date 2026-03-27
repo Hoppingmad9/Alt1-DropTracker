@@ -72,8 +72,8 @@ label {
   max-width: 900px;
   margin: 0 auto;
   padding: 16px;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
   gap: 16px;
   overflow: hidden;
 }
@@ -129,7 +129,6 @@ label {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
   min-height: 0;
-  flex: 0 0 auto;
 }
 
 .summary-card,
@@ -209,9 +208,8 @@ label {
 }
 
 .drops-panel {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
   min-height: 220px;
   overflow: hidden;
 }
@@ -249,8 +247,8 @@ label {
 }
 
 .drops-table-scroll {
-  flex: 1 1 auto;
-  min-height: 140px;
+  min-height: 0;
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   border-radius: 10px;
