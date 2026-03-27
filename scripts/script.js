@@ -334,15 +334,26 @@ window.setTimeout(function () {
   function handlePetPickup(parsed, rawLine) {
     const normalizedName = normalizeItemName(parsed.itemName);
 
-    const match = Array.from(pendingDrops.values())
-      .filter(function (entry) {
-        return entry.normalizedItemName === normalizedName;
-      })
-      .sort(function (a, b) {
-        return a.createdAt - b.createdAt;
-      })[0];
+    let candidates = Array.from(pendingDrops.values()).filter(function (entry) {
+      return entry.normalizedItemName === normalizedName;
+    });
+
+    if (parsed.amount !== null && parsed.amount !== undefined) {
+      const amountMatches = candidates.filter(function (entry) {
+        return Number(entry.amount) === Number(parsed.amount);
+      });
+
+      if (amountMatches.length) {
+        candidates = amountMatches;
+      }
+    }
+
+    const match = candidates.sort(function (a, b) {
+      return a.createdAt - b.createdAt;
+    })[0];
 
     if (!match) {
+      console.log("↳ PET pickup found no pending match for:", parsed);
       return;
     }
 
