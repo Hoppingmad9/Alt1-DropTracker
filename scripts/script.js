@@ -48,6 +48,8 @@ window.setTimeout(function () {
     refreshChatsBtn: document.getElementById("refreshChatsBtn"),
     clearHistoryBtn: document.getElementById("clearHistoryBtn"),
     chatSelect: document.getElementById("chatSelect"),
+    chatPanel: document.getElementById("chatPanel"),
+    dropsPanel: document.getElementById("dropsPanel"),
     dropsTableBody: document.getElementById("dropsTableBody"),
     emptyState: document.getElementById("emptyState"),
     dropsTable: document.getElementById("dropsTable"),
@@ -72,6 +74,7 @@ window.setTimeout(function () {
     renderSettingsForm();
     renderSummary();
     renderTrackedDrops();
+    updateRunningUi();
     findChats();
   }
 
@@ -132,6 +135,16 @@ window.setTimeout(function () {
     }, 1000);
   }
 
+  function updateRunningUi() {
+    const isRunning = !!trackingTimer;
+
+    els.chatPanel.style.display = isRunning ? "none" : "block";
+    els.dropsPanel.style.display = isRunning ? "block" : "none";
+
+    els.startBtn.disabled = isRunning;
+    els.stopBtn.disabled = !isRunning;
+  }
+
   function refreshChats() {
     els.chatSelect.innerHTML = '<option value="">Select Chat</option>';
     setStatus("Refreshing chatboxes...");
@@ -177,6 +190,7 @@ window.setTimeout(function () {
 
     trackingTimer = setInterval(readChatbox, pollIntervalMs);
     setStatus("Tracking drops...");
+    updateRunningUi();
   }
 
   function stopTracking() {
@@ -185,6 +199,7 @@ window.setTimeout(function () {
       trackingTimer = null;
     }
     setStatus("Stopped.");
+    updateRunningUi();
   }
 
   function readChatbox() {
