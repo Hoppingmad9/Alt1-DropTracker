@@ -6,6 +6,12 @@ window.setTimeout(function () {
   const maxHistoryLines = 100;
   const pollIntervalMs = 250;
 
+  const alertSounds = {
+    bell: "/assets/bell.wav",
+  };
+
+  let missedDropAlertAudio = null;
+
   const storageKeys = {
     selectedChat: "dropWatcher.chatIndex",
     settings: "dropWatcher.settings",
@@ -426,32 +432,41 @@ window.setTimeout(function () {
   }
 
   function playAlertSound() {
+    if (!settings.playSound) {
+      return;
+    }
+
     try {
-      const AudioContextClass =
-        window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) {
-        return;
+      if (missedDropAlertAudio) {
+        missedDropAlertAudio.pause();
+        missedDropAlertAudio.currentTime = 0;
       }
 
-      const ctx = new AudioContextClass();
-      const oscillator = ctx.createOscillator();
-      const gain = ctx.createGain();
+      missedDropAlertAudio = new Audio(alertSounds.bell);
+      missedDropAlertAudio.loop = true;
+      missedDropAlertAudio.volume = 0.7;
 
-      oscillator.type = "sine";
-      oscillator.frequency.value = 880;
-      gain.gain.value = 0.08;
-
-      oscillator.connect(gain);
-      gain.connect(ctx.destination);
-
-      oscillator.start();
-
-      window.setTimeout(function () {
-        oscillator.stop();
-        ctx.close();
-      }, 250);
+      const playPromise = missedDropAlertAudio.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(function (error) {
+          console.log("Failed to play alert sound:", error);
+        });
+      }
     } catch (error) {
-      // sound unsupported
+      console.log("Failed to create alert sound:", error);
+    }
+  }
+
+  function stopAlertSound() {
+    if (!missedDropAlertAudio) {
+      return;
+    }
+
+    try {
+      missedDropAlertAudio.pause();
+      missedDropAlertAudio.currentTime = 0;
+    } catch (error) {
+      console.log("Failed to stop alert sound:", error);
     }
   }
 
@@ -504,6 +519,7 @@ window.setTimeout(function () {
       resolvedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
     });
 
+    stopAlertSound();
     persistTrackedDrops();
     renderTrackedDrops();
     setStatus(`Marked as picked up: ${drop.itemName}`);
@@ -629,6 +645,7 @@ window.setTimeout(function () {
     sessionStorage.removeItem(storageKeys.history);
     localStorage.removeItem(storageKeys.trackedDrops);
 
+    stopAlertSound();
     renderTrackedDrops();
     setStatus("History cleared.");
   }
