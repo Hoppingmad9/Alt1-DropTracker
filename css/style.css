@@ -1,0 +1,156 @@
+.header {
+    font-weight: bold;
+}
+
+.row {
+    text-align: center;
+}
+
+.matHeader {
+    border-top: white solid .5px;
+    background: url('https://runeapps.org/nis/alt1-currentskin/nisbutton.png') 0px -100%/24px 400% repeat content-box;
+    color: black;
+    font-family: 'trajan-pro-3';
+}
+
+.mats>.row,
+.matHeader * {
+    border-bottom: white solid .5px;
+    border-right: white solid .5px;
+}
+
+.matHeader,
+.mats>.row * {
+    border-left: white solid .5px;
+}
+
+.matHeader>div:nth-child(2) {
+    margin-left: 1px;
+}
+
+.mats input[type='checkbox'] {
+    margin: 20%;
+    height: 25px;
+    width: 25px;
+}
+
+.scroll {
+    overflow-y: scroll;
+    height: calc(100% - 70px);
+}
+
+.mats {
+    height: 100%
+}
+
+.scroll::-webkit-scrollbar {
+    display: none;
+}
+
+body.nis:not(.artefact)::-webkit-scrollbar {
+    display: none;
+}
+
+body.nis:not(.artefact) {
+    overflow: scroll !important;
+    min-width: 315px;
+    height: calc(100vh - 10px);
+}
+
+.complete {
+    background-color: lime;
+    color: black;
+}
+
+.container * {
+    font-weight: bold;
+    font-size: 10pt;
+}
+
+.container {
+    margin-top: 10px
+}
+
+.hide {
+    display: none;
+}
+
+.getMat {
+    background-color: #00eeff !important;
+    transition: background-color 500ms;
+}
+
+.normal {
+    background-color: transparent;
+    transition: background-color 500ms;
+}
+
+.goal,
+.goalCol {
+    display: none;
+}
+
+.nisbutton {
+    font-size: 8pt !important;
+}
+
+.artefact {
+    overflow: hidden !important;
+    min-width: 400px;
+    padding-right: .5em;
+}
+
+.artefactInput {
+    text-align: center;
+}
+
+.artefactInput::-webkit-outer-spin-button,
+.artefactInput::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    /* margin: 0; */
+}
+
+.artifactMenu {
+    /* margin-top: 4em */
+}
+
+.main {
+    overflow-y: scroll;
+    max-height: 75vh;
+    margin: 5px 5px 0 5px;
+}
+
+.input-group-text {
+    min-width: 249px;
+}
+
+.modal-body,
+.modal-header,
+.modal-footer {
+    background-color: grey;
+    color: white;
+}
+
+.warning {
+    background-color: yellow;
+    color: black;
+    font-weight: bold;
+}
+
+.danger {
+    background-color: red;
+    color: black;
+    font-weight: bold;
+}
+
+input[type='search'],
+#collection {
+    width: 100%
+}
+
+.popover-header,
+.popover-title {
+    background: url("https://runeapps.org/nis/alt1-currentskin/background.png");
+    color: white;
+    font-family: 'trajan-pro-3';
+}
