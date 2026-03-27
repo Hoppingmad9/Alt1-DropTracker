@@ -270,7 +270,7 @@ window.setTimeout(function () {
     }
 
     const petMatch = line.match(
-      /^\[(\d{2}:\d{2}:\d{2})\]\s+Your legendary pet finds:\s+(.+?)\.?$/i,
+      /^\[(\d{2}:\d{2}:\d{2})\]\s+Your legendary pet finds:\s+(.+?)\.?$/i
     );
 
     if (petMatch) {
