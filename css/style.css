@@ -124,36 +124,11 @@ label {
   background: #8f3a3a;
 }
 
-.summary-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  min-height: 0;
-}
-
-.summary-card,
 .chat-panel,
 .drops-panel {
   background: #1a1f27;
   border: 1px solid #2b313d;
   border-radius: 14px;
-}
-
-.summary-card {
-  padding: 14px;
-}
-
-.summary-label {
-  font-size: 12px;
-  color: #9aa4b2;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 6px;
-}
-
-.summary-value {
-  font-size: 22px;
-  font-weight: bold;
 }
 
 .chat-panel,
@@ -346,10 +321,6 @@ label {
   .topbar {
     flex-direction: column;
     align-items: stretch;
-  }
-
-  .summary-row {
-    grid-template-columns: 1fr;
   }
 
   .chat-controls {
