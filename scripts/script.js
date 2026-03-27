@@ -479,6 +479,32 @@ window.setTimeout(function () {
     return itemName.toLowerCase().replace(/\s+/g, " ").trim();
   }
 
+  function markDropManuallyPickedUp(id) {
+    const drop = trackedDrops.find(function (entry) {
+      return entry.id === id;
+    });
+
+    if (!drop) {
+      return;
+    }
+
+    if (drop.status !== "Alerted - not picked up") {
+      return;
+    }
+
+    pendingDrops.delete(id);
+
+    updateTrackedDrop(id, {
+      status: "Picked up (manual)",
+      resolvedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+    });
+
+    persistTrackedDrops();
+    renderSummary();
+    renderTrackedDrops();
+    setStatus(`Marked as picked up: ${drop.itemName}`);
+  }
+
   function updateTrackedDrop(id, patch) {
     trackedDrops = trackedDrops.map(function (drop) {
       if (drop.id !== id) {
@@ -526,6 +552,7 @@ window.setTimeout(function () {
 
     rows.forEach(function (drop) {
       const tr = document.createElement("tr");
+      const isAlerted = drop.status === "Alerted - not picked up";
 
       tr.innerHTML = `
         <td>${escapeHtml(drop.seenAt || "")}</td>
@@ -534,6 +561,15 @@ window.setTimeout(function () {
         <td>${escapeHtml(drop.status || "")}</td>
         <td>${escapeHtml(drop.source || "")}</td>
       `;
+
+      if (isAlerted) {
+        tr.classList.add("clickable-alert-row");
+        tr.title = "Click to mark as picked up";
+
+        tr.addEventListener("click", function () {
+          markDropManuallyPickedUp(drop.id);
+        });
+      }
 
       els.dropsTableBody.appendChild(tr);
     });
