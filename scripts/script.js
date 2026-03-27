@@ -11,6 +11,7 @@ window.setTimeout(function () {
   };
 
   let missedDropAlertAudio = null;
+  let alertIntervalId = null;
 
   const storageKeys = {
     selectedChat: "dropWatcher.chatIndex",
@@ -24,6 +25,7 @@ window.setTimeout(function () {
     trackMode: "all", // "all" | "watchlist"
     watchlistItems: [],
     alertSeconds: 8,
+    alertRepeatSeconds: 3,
     alertVolume: 70,
     playSound: true,
     showResolved: true,
@@ -66,6 +68,7 @@ window.setTimeout(function () {
     trackModeWatchlist: document.getElementById("trackModeWatchlist"),
     watchlistItems: document.getElementById("watchlistItems"),
     alertSeconds: document.getElementById("alertSeconds"),
+    alertRepeatSeconds: document.getElementById("alertRepeatSeconds"),
     alertVolume: document.getElementById("alertVolume"),
     playSound: document.getElementById("playSound"),
     showResolved: document.getElementById("showResolved"),
@@ -253,7 +256,6 @@ window.setTimeout(function () {
         }
         return;
       }
-
 
       if (!parsed) {
         if (chatConsoleDebug) {
@@ -452,42 +454,37 @@ window.setTimeout(function () {
       return;
     }
 
-    try {
-      if (missedDropAlertAudio) {
-        missedDropAlertAudio.pause();
-        missedDropAlertAudio.currentTime = 0;
-      }
+    stopAlertSound(); // clear existing loop
 
-      missedDropAlertAudio = new Audio(alertSounds.bell);
-      missedDropAlertAudio.loop = true;
-      missedDropAlertAudio.volume = clampNumber(
-        Number(settings.alertVolume) / 100,
-        0,
-        1,
-        0.7
-      );
-
-      const playPromise = missedDropAlertAudio.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(function (error) {
-          console.log("Failed to play alert sound:", error);
-        });
+    function playOnce() {
+      try {
+        const audio = new Audio("./assets/bell.wav");
+        audio.volume = clampNumber(
+          Number(settings.alertVolume) / 100,
+          0,
+          1,
+          0.7
+        );
+        audio.play().catch(() => {});
+      } catch (e) {
+        console.log("Audio play failed:", e);
       }
-    } catch (error) {
-      console.log("Failed to create alert sound:", error);
     }
+
+    // play immediately
+    playOnce();
+
+    // then repeat
+    alertIntervalId = setInterval(
+      playOnce,
+      Math.max(1, settings.alertRepeatSeconds) * 1000
+    );
   }
 
   function stopAlertSound() {
-    if (!missedDropAlertAudio) {
-      return;
-    }
-
-    try {
-      missedDropAlertAudio.pause();
-      missedDropAlertAudio.currentTime = 0;
-    } catch (error) {
-      console.log("Failed to stop alert sound:", error);
+    if (alertIntervalId) {
+      clearInterval(alertIntervalId);
+      alertIntervalId = null;
     }
   }
 
@@ -629,6 +626,7 @@ window.setTimeout(function () {
     els.trackModeWatchlist.checked = settings.trackMode === "watchlist";
     els.watchlistItems.value = settings.watchlistItems.join("\n");
     els.alertSeconds.value = String(settings.alertSeconds);
+    els.alertRepeatSeconds.value = String(settings.alertRepeatSeconds);
     els.alertVolume.value = String(settings.alertVolume);
     els.playSound.checked = !!settings.playSound;
     els.showResolved.checked = !!settings.showResolved;
@@ -645,6 +643,7 @@ window.setTimeout(function () {
         })
         .filter(Boolean),
       alertSeconds: clampNumber(parseInt(els.alertSeconds.value, 10), 1, 60, 8),
+      alertRepeatSeconds: clampNumber(parseInt(els.alertRepeatSeconds.value, 10),1,30,3),
       alertVolume: clampNumber(parseInt(els.alertVolume.value, 10), 0, 100, 70),
       playSound: els.playSound.checked,
       showResolved: els.showResolved.checked,
