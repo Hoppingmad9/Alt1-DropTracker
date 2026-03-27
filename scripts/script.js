@@ -214,30 +214,39 @@ window.setTimeout(function () {
 
     const chatArr = chatStr.trim().split("\n");
 
-    chatArr.forEach(function (rawLine) {
-      const line = rawLine.trim();
-      if (!line) {
-        return;
-      }
+		chatArr.forEach(function (rawLine) {
+			const line = rawLine.trim();
+			if (!line) {
+				return;
+			}
 
-      if (isInHistory(line)) {
-        return;
-      }
+			console.log("CHAT LINE:", line);
 
-      const parsed = parseChatLine(line);
-      if (!parsed) {
-        return;
-      }
+			if (isInHistory(line)) {
+				console.log("↳ Skipped (in history)");
+				return;
+			}
 
-      if (parsed.kind === "beam") {
-        handleBeamDrop(parsed, line);
-        return;
-      }
+			const parsed = parseChatLine(line);
 
-      if (parsed.kind === "pet") {
-        handlePetPickup(parsed, line);
-      }
-    });
+			if (!parsed) {
+				console.log("↳ No match");
+				return;
+			}
+
+			console.log("↳ MATCH:", parsed);
+
+			if (parsed.kind === "beam") {
+				console.log("↳ Detected BEAM drop");
+				handleBeamDrop(parsed, line);
+				return;
+			}
+
+			if (parsed.kind === "pet") {
+				console.log("↳ Detected PET pickup");
+				handlePetPickup(parsed, line);
+			}
+		});
 
     updateChatHistory(chatArr);
   }
