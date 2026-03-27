@@ -190,6 +190,7 @@ window.setTimeout(function () {
 
   function readChatbox() {
     const opts = reader.read() || [];
+		console.log("RAW OPTS:", opts);
     let chatStr = "";
 
     if (!opts.length) {
