@@ -11,6 +11,7 @@ window.setTimeout(function () {
   };
 
   let alertIntervalId = null;
+  const dropDespawnSeconds = 120;
 
   const storageKeys = {
     selectedChat: "dropWatcher.chatIndex",
@@ -343,17 +344,23 @@ window.setTimeout(function () {
       createdAt: now,
       resolvedAt: null,
       alertedAt: null,
+      missedAt: null,
       rawBeamLine: rawLine,
       rawPetLine: null,
-      timerId: null,
+      alertTimerId: null,
+      despawnTimerId: null,
     };
 
-    entry.timerId = window.setTimeout(
+    entry.alertTimerId = window.setTimeout(
       function () {
         markDropAlerted(entry.id);
       },
       Math.max(1, Number(settings.alertSeconds)) * 1000,
     );
+
+    entry.despawnTimerId = window.setTimeout(function () {
+      markDropMissed(entry.id);
+    }, dropDespawnSeconds * 1000);
 
     pendingDrops.set(entry.id, entry);
     trackedDrops.unshift(stripTimer(entry));
@@ -388,8 +395,12 @@ window.setTimeout(function () {
       return;
     }
 
-    if (match.timerId) {
-      clearTimeout(match.timerId);
+    if (match.alertTimerId) {
+      clearTimeout(match.alertTimerId);
+    }
+
+    if (match.despawnTimerId) {
+      clearTimeout(match.despawnTimerId);
     }
 
     match.status = "Picked up";
@@ -415,7 +426,6 @@ window.setTimeout(function () {
 
     entry.status = "Alerted";
     entry.alertedAt = new Date().toLocaleTimeString("en-GB", { hour12: false });
-    pendingDrops.delete(id);
 
     updateTrackedDrop(id, {
       status: entry.status,
@@ -425,6 +435,74 @@ window.setTimeout(function () {
     sendAlert(entry);
     persistTrackedDrops();
     renderTrackedDrops();
+  }
+
+  function markDropManuallyPickedUp(id) {
+    const drop = trackedDrops.find(function (entry) {
+      return entry.id === id;
+    });
+
+    if (!drop) {
+      return;
+    }
+
+    if (drop.status !== "Alerted") {
+      return;
+    }
+
+    const pendingEntry = pendingDrops.get(id);
+
+    if (pendingEntry) {
+      if (pendingEntry.alertTimerId) {
+        clearTimeout(pendingEntry.alertTimerId);
+      }
+
+      if (pendingEntry.despawnTimerId) {
+        clearTimeout(pendingEntry.despawnTimerId);
+      }
+    }
+
+    pendingDrops.delete(id);
+
+    updateTrackedDrop(id, {
+      status: "Picked up",
+      resolvedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
+    });
+
+    stopAlertSound();
+    persistTrackedDrops();
+    renderTrackedDrops();
+    setStatus(`Marked as picked up: ${drop.itemName}`);
+  }
+
+  function markDropMissed(id) {
+    const entry = pendingDrops.get(id);
+    if (!entry) {
+      return;
+    }
+
+    if (entry.alertTimerId) {
+      clearTimeout(entry.alertTimerId);
+    }
+
+    if (entry.despawnTimerId) {
+      clearTimeout(entry.despawnTimerId);
+    }
+
+    entry.status = "Missed";
+    entry.missedAt = new Date().toLocaleTimeString("en-GB", { hour12: false });
+
+    pendingDrops.delete(id);
+
+    updateTrackedDrop(id, {
+      status: entry.status,
+      missedAt: entry.missedAt,
+    });
+
+    stopAlertSound();
+    persistTrackedDrops();
+    renderTrackedDrops();
+    setStatus(`Missed drop: ${entry.itemName}`);
   }
 
   function sendAlert(entry) {
@@ -462,7 +540,7 @@ window.setTimeout(function () {
           Number(settings.alertVolume) / 100,
           0,
           1,
-          0.7
+          0.7,
         );
         audio.play().catch(() => {});
       } catch (e) {
@@ -476,7 +554,7 @@ window.setTimeout(function () {
     // then repeat
     alertIntervalId = setInterval(
       playOnce,
-      Math.max(1, settings.alertRepeatSeconds) * 1000
+      Math.max(1, settings.alertRepeatSeconds) * 1000,
     );
   }
 
@@ -516,32 +594,6 @@ window.setTimeout(function () {
     return itemName.toLowerCase().replace(/\s+/g, " ").trim();
   }
 
-  function markDropManuallyPickedUp(id) {
-    const drop = trackedDrops.find(function (entry) {
-      return entry.id === id;
-    });
-
-    if (!drop) {
-      return;
-    }
-
-    if (drop.status !== "Alerted") {
-      return;
-    }
-
-    pendingDrops.delete(id);
-
-    updateTrackedDrop(id, {
-      status: "Picked up",
-      resolvedAt: new Date().toLocaleTimeString("en-GB", { hour12: false }),
-    });
-
-    stopAlertSound();
-    persistTrackedDrops();
-    renderTrackedDrops();
-    setStatus(`Marked as picked up: ${drop.itemName}`);
-  }
-
   function updateTrackedDrop(id, patch) {
     trackedDrops = trackedDrops.map(function (drop) {
       if (drop.id !== id) {
@@ -563,6 +615,7 @@ window.setTimeout(function () {
       createdAt: entry.createdAt,
       resolvedAt: entry.resolvedAt,
       alertedAt: entry.alertedAt,
+      missedAt: entry.missedAt,
       rawBeamLine: entry.rawBeamLine,
       rawPetLine: entry.rawPetLine,
     };
@@ -642,7 +695,12 @@ window.setTimeout(function () {
         })
         .filter(Boolean),
       alertSeconds: clampNumber(parseInt(els.alertSeconds.value, 10), 1, 60, 8),
-      alertRepeatSeconds: clampNumber(parseInt(els.alertRepeatSeconds.value, 10),1,30,3),
+      alertRepeatSeconds: clampNumber(
+        parseInt(els.alertRepeatSeconds.value, 10),
+        1,
+        30,
+        3,
+      ),
       alertVolume: clampNumber(parseInt(els.alertVolume.value, 10), 0, 100, 70),
       playSound: els.playSound.checked,
       showResolved: els.showResolved.checked,
@@ -656,8 +714,12 @@ window.setTimeout(function () {
 
   function clearHistory() {
     pendingDrops.forEach(function (entry) {
-      if (entry.timerId) {
-        clearTimeout(entry.timerId);
+      if (entry.alertTimerId) {
+        clearTimeout(entry.alertTimerId);
+      }
+
+      if (entry.despawnTimerId) {
+        clearTimeout(entry.despawnTimerId);
       }
     });
 
