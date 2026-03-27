@@ -53,6 +53,7 @@ window.setTimeout(function () {
     dropsTableBody: document.getElementById("dropsTableBody"),
     emptyState: document.getElementById("emptyState"),
     dropsTable: document.getElementById("dropsTable"),
+    dropsTableScroll: document.querySelector(".drops-table-scroll"),
     pendingDropCount: document.getElementById("pendingDropCount"),
     alertedDropCount: document.getElementById("alertedDropCount"),
     watchModeSummary: document.getElementById("watchModeSummary"),
@@ -558,12 +559,12 @@ window.setTimeout(function () {
 
     if (!rows.length) {
       els.emptyState.style.display = "block";
-      els.dropsTable.style.display = "none";
+      els.dropsTableScroll.style.display = "none";
       return;
     }
 
     els.emptyState.style.display = "none";
-    els.dropsTable.style.display = "table";
+    els.dropsTableScroll.style.display = "block";
 
     rows.forEach(function (drop) {
       const tr = document.createElement("tr");
