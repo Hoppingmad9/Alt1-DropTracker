@@ -6,6 +6,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
   font-family: Arial, Helvetica, sans-serif;
   background: #111318;
   color: #f3f4f6;
@@ -13,6 +14,7 @@ body {
 
 body {
   min-height: 100vh;
+  overflow: hidden;
 }
 
 button,
@@ -66,9 +68,14 @@ label {
 }
 
 .app {
+  height: 100vh;
   max-width: 900px;
   margin: 0 auto;
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
 }
 
 .topbar {
@@ -76,11 +83,12 @@ label {
   justify-content: space-between;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 16px;
   padding: 16px;
   background: #1a1f27;
   border: 1px solid #2b313d;
   border-radius: 14px;
+  min-height: 0;
+  flex: 0 0 auto;
 }
 
 .title-wrap h1 {
@@ -120,7 +128,8 @@ label {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 16px;
+  min-height: 0;
+  flex: 0 0 auto;
 }
 
 .summary-card,
@@ -151,7 +160,11 @@ label {
 .chat-panel,
 .drops-panel {
   padding: 16px;
-  margin-bottom: 16px;
+  min-height: 0;
+}
+
+.chat-panel {
+  flex: 0 0 auto;
 }
 
 .chat-controls {
@@ -178,6 +191,7 @@ label {
 
 .panel-header {
   margin-bottom: 12px;
+  flex: 0 0 auto;
 }
 
 .panel-header h2,
@@ -194,6 +208,14 @@ label {
   color: #9aa4b2;
 }
 
+.drops-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 220px;
+  overflow: hidden;
+}
+
 .drops-table {
   width: 100%;
   border-collapse: collapse;
@@ -206,6 +228,9 @@ label {
   text-align: left;
   padding: 10px 12px;
   border-bottom: 1px solid #2b313d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .drops-table th {
@@ -221,6 +246,39 @@ label {
 
 .drops-table tbody tr:hover td {
   background: #1d2430;
+}
+
+#dropsTable {
+  display: block;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 140px;
+}
+
+#dropsTable thead,
+#dropsTable tbody,
+#dropsTable tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#dropsTable thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+#dropsTable tbody {
+  display: block;
+  min-height: 140px;
+  overflow-y: auto;
+}
+
+#dropsTable tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .modal {
@@ -292,6 +350,18 @@ label {
   line-height: 1;
 }
 
+.clickable-alert-row {
+  cursor: pointer;
+}
+
+.clickable-alert-row td {
+  background: #3a1f1f;
+}
+
+.clickable-alert-row:hover td {
+  background: #4a2a2a;
+}
+
 @media (max-width: 700px) {
   .topbar {
     flex-direction: column;
@@ -311,53 +381,4 @@ label {
     padding: 8px 10px;
     font-size: 13px;
   }
-}
-
-.drops-panel {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-#dropsTable {
-  display: block;
-  width: 100%;
-}
-
-#dropsTable thead,
-#dropsTable tbody,
-#dropsTable tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-#dropsTable tbody {
-  display: block;
-  max-height: 320px;
-  overflow-y: auto;
-}
-
-#dropsTable thead {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-#dropsTable tbody tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-.clickable-alert-row {
-  cursor: pointer;
-}
-
-.clickable-alert-row td {
-  background: #3a1f1f;
-}
-
-.clickable-alert-row:hover td {
-  background: #4a2a2a;
 }
