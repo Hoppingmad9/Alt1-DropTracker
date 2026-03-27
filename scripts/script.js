@@ -238,30 +238,38 @@ window.setTimeout(function () {
         return;
       }
 
-      console.log("CHAT LINE:", line);
-
-      if (isInHistory(line)) {
-        console.log("↳ Skipped (in history)");
-        return;
-      }
-
       const parsed = parseChatLine(line);
 
-      if (!parsed) {
-        console.log("↳ No match");
-        return;
+      const chatConsoleDebug = false;
+      if (chatConsoleDebug) {
+        console.log("CHAT LINE:", line);
+
+        if (isInHistory(line)) {
+          console.log("↳ Skipped (in history)");
+          return;
+        }
+
+
+        if (!parsed) {
+          console.log("↳ No match");
+          return;
+        }
+
+        console.log("↳ MATCH:", parsed);
       }
 
-      console.log("↳ MATCH:", parsed);
-
       if (parsed.kind === "beam") {
-        console.log("↳ Detected BEAM drop");
+        if (chatConsoleDebug) {
+          console.log("↳ Detected BEAM drop");
+        }
         handleBeamDrop(parsed, line);
         return;
       }
 
       if (parsed.kind === "pet") {
-        console.log("↳ Detected PET pickup");
+        if (chatConsoleDebug) {
+          console.log("↳ Detected PET pickup");
+        }
         handlePetPickup(parsed, line);
       }
     });
