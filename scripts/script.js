@@ -48,7 +48,6 @@ window.setTimeout(function () {
     refreshChatsBtn: document.getElementById("refreshChatsBtn"),
     clearHistoryBtn: document.getElementById("clearHistoryBtn"),
     chatSelect: document.getElementById("chatSelect"),
-    chatPanel: document.getElementById("chatPanel"),
     dropsPanel: document.getElementById("dropsPanel"),
     dropsTableBody: document.getElementById("dropsTableBody"),
     emptyState: document.getElementById("emptyState"),
@@ -134,9 +133,6 @@ window.setTimeout(function () {
 
   function updateRunningUi() {
     const isRunning = !!trackingTimer;
-
-    els.chatPanel.style.display = isRunning ? "none" : "block";
-    els.dropsPanel.style.display = isRunning ? "block" : "none";
 
     els.startBtn.disabled = isRunning;
     els.stopBtn.disabled = !isRunning;

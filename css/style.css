@@ -31,7 +31,9 @@ button {
   cursor: pointer;
   background: #2b313d;
   color: #f3f4f6;
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease;
 }
 
 button:hover {
@@ -73,39 +75,9 @@ label {
   margin: 0 auto;
   padding: 16px;
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: 1fr;
   gap: 16px;
   overflow: hidden;
-}
-
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px;
-  background: #1a1f27;
-  border: 1px solid #2b313d;
-  border-radius: 14px;
-  min-height: 0;
-  flex: 0 0 auto;
-}
-
-.title-wrap h1 {
-  margin: 0 0 6px;
-  font-size: 24px;
-}
-
-.title-wrap p {
-  margin: 0;
-  color: #b8c0cc;
-  font-size: 14px;
-}
-
-.topbar-actions {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
 }
 
 #startBtn {
@@ -137,10 +109,6 @@ label {
   min-height: 0;
 }
 
-.chat-panel {
-  flex: 0 0 auto;
-}
-
 .chat-controls {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -159,7 +127,7 @@ label {
 .modal-footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
 }
 
@@ -172,6 +140,24 @@ label {
 .modal-header h2 {
   margin: 0;
   font-size: 18px;
+}
+
+.panel-title-wrap h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.panel-title-wrap p {
+  margin: 0;
+  color: #b8c0cc;
+  font-size: 14px;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .empty-state {
@@ -318,9 +304,13 @@ label {
 }
 
 @media (max-width: 700px) {
-  .topbar {
+  .panel-header {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .panel-actions {
+    justify-content: stretch;
   }
 
   .chat-controls {
