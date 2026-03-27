@@ -243,18 +243,24 @@ window.setTimeout(function () {
       const chatConsoleDebug = false;
       if (chatConsoleDebug) {
         console.log("CHAT LINE:", line);
+      }
 
-        if (isInHistory(line)) {
+      if (isInHistory(line)) {
+        if (chatConsoleDebug) {
           console.log("↳ Skipped (in history)");
-          return;
         }
+        return;
+      }
 
 
-        if (!parsed) {
+      if (!parsed) {
+        if (chatConsoleDebug) {
           console.log("↳ No match");
-          return;
         }
+        return;
+      }
 
+      if (chatConsoleDebug) {
         console.log("↳ MATCH:", parsed);
       }
 
