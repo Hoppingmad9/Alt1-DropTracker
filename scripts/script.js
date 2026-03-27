@@ -27,6 +27,8 @@ window.setTimeout(function () {
     colors: [
       A1lib.mixColor(255, 255, 255), // white text
       A1lib.mixColor(60, 183, 30),   // green text
+			A1lib.mixColor(255, 203, 5),   // gold/yellow drop text
+			A1lib.mixColor(255, 215, 0),   // alternate gold
     ],
     backwards: true,
   };
@@ -253,8 +255,8 @@ window.setTimeout(function () {
 
   function parseChatLine(line) {
     const beamMatch = line.match(
-      /^\[(\d{2}:\d{2}:\d{2})\]\s+A golden beam shines over one of your items\.\s+You receive:\s+(\d+)\s+(.+?)\.$/i
-    );
+			/^\[(\d{2}:\d{2}:\d{2})\]\s+A golden beam shines over one of your items\.\s+You receive:\s+(\d+)(?:\s*x)?\s+(.+?)\.$/i
+		);
 
     if (beamMatch) {
       return {
