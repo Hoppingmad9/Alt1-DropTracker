@@ -280,7 +280,7 @@ window.setTimeout(function () {
         itemName: cleanItemName(petMatch[2]),
       };
     }
-
+    console.log("PARSE FAILED:", JSON.stringify(line));
     return null;
   }
 
