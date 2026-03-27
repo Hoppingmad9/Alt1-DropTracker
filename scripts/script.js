@@ -10,7 +10,6 @@ window.setTimeout(function () {
     bell: "./assets/bell.wav",
   };
 
-  let missedDropAlertAudio = null;
   let alertIntervalId = null;
 
   const storageKeys = {
