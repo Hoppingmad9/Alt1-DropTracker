@@ -248,36 +248,17 @@ label {
   background: #1d2430;
 }
 
-#dropsTable {
-  display: block;
-  width: 100%;
+.drops-table-scroll {
   flex: 1 1 auto;
   min-height: 140px;
-}
-
-#dropsTable thead,
-#dropsTable tbody,
-#dropsTable tr {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-#dropsTable thead {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-}
-
-#dropsTable tbody {
-  display: block;
-  min-height: 140px;
   overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 10px;
 }
 
-#dropsTable tbody tr {
-  display: table;
+#dropsTable {
   width: 100%;
+  border-collapse: collapse;
   table-layout: fixed;
 }
 
