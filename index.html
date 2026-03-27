@@ -37,264 +37,140 @@
     <script src="https://www.unpkg.com/alt1/dist/chatbox/index.js"></script>
   </head>
 
-  <body class="nis">
-    <div class="container">
-      <div class="row matHeader">
-        <div class="col hide">Hide</div>
-        <div class="col-6">Mats</div>
-        <div class="col">Qty</div>
-        <div class="col goalCol">Goal</div>
+  <body>
+  <div class="app">
+    <header class="topbar">
+      <div class="title-wrap">
+        <h1>Drop Pickup Watcher</h1>
+        <p id="statusText">Waiting to start...</p>
       </div>
-      <div class="row scroll">
-        <div class="col mats"></div>
+
+      <div class="topbar-actions">
+        <button id="startBtn" type="button">Start</button>
+        <button id="stopBtn" type="button">Stop</button>
+        <button id="openSettingsBtn" type="button">Settings</button>
       </div>
-      <div class="row fixed-bottom">
-        <div class="col">
-          <div class="row">
-            <div class="col">
-              <button class="tracker nisbutton">Start</button>
-              <button
-                class="nisbutton"
-                data-toggle="modal"
-                data-target="#settings"
-                type="button"
-              >
-                Settings
-              </button>
-            </div>
-          </div>
+    </header>
+
+    <section class="summary-row">
+      <div class="summary-card">
+        <div class="summary-label">Watching</div>
+        <div class="summary-value" id="watchModeSummary">All drops</div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-label">Pending</div>
+        <div class="summary-value" id="pendingDropCount">0</div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-label">Alerted</div>
+        <div class="summary-value" id="alertedDropCount">0</div>
+      </div>
+    </section>
+
+    <section class="chat-panel">
+      <label for="chatSelect"><strong>Selected Chat</strong></label>
+      <div class="chat-controls">
+        <select id="chatSelect">
+          <option value="">Select Chat</option>
+        </select>
+        <button id="refreshChatsBtn" type="button">Refresh Chats</button>
+      </div>
+      <p class="help-text">
+        Make sure timestamps are visible in the chosen chatbox.
+      </p>
+    </section>
+
+    <section class="drops-panel">
+      <div class="panel-header">
+        <h2>Tracked Drops</h2>
+        <button id="clearHistoryBtn" type="button">Clear History</button>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        No drops tracked yet.
+      </div>
+
+      <table id="dropsTable" class="drops-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Item</th>
+            <th>Amt</th>
+            <th>Status</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody id="dropsTableBody"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <div id="settingsModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="settingsTitle">Settings</h2>
+        <button id="closeSettingsBtn" type="button" aria-label="Close settings">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="trackEnabled" checked />
+            Enable drop tracking
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <div class="setting-label">Watch mode</div>
+
+          <label>
+            <input type="radio" name="trackMode" id="trackModeAll" value="all" checked />
+            Alert for all drops
+          </label>
+
+          <label>
+            <input type="radio" name="trackMode" id="trackModeWatchlist" value="watchlist" />
+            Alert only for watched drops
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <label for="watchlistItems" class="setting-label">Watched drops (one per line)</label>
+          <textarea
+            id="watchlistItems"
+            rows="8"
+            placeholder="Noxious scythe&#10;Torva platebody&#10;Hazelmere's signet ring"
+          ></textarea>
+        </div>
+
+        <div class="setting-group">
+          <label for="alertSeconds" class="setting-label">Alert delay (seconds)</label>
+          <input id="alertSeconds" type="number" min="1" max="60" value="8" />
+        </div>
+
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="playSound" checked />
+            Play sound on missed pickup
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <label>
+            <input type="checkbox" id="showResolved" checked />
+            Show resolved pickups in history
+          </label>
         </div>
       </div>
-    </div>
-    <div class="modal nis" tabindex="-1" role="dialog" id="settings">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Settings</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col">
-                <h6>Sort Mats by:</h6>
-              </div>
-              <div class="col">
-                <select id="sort">
-                  <option value="">Select</option>
-                  <option value="id">Mat Storage</option>
-                  <option value="name">Name</option>
-                  <option value="qty">Qty</option>
-                  <option value="goal">Goal</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div
-                class="col header"
-                title="When checked, will only show materials with a Quantity greater than 0"
-              >
-                <h6>Enable Filter</h6>
-              </div>
-              <div class="col">
-                <input type="checkbox" class="filter" />
-              </div>
-            </div>
-            <div class="row">
-              <div
-                class="col header"
-                title="When checked, allows you to edit the values for each material."
-              >
-                <h6>Enable Edit</h6>
-              </div>
-              <div class="col">
-                <input
-                  type="checkbox"
-                  class="edit"
-                  data-toggle="modal"
-                  data-target="#settings"
-                />
-              </div>
-            </div>
-            <div class="row">
-              <div
-                class="col header"
-                title="When checked, Shows the goals column."
-              >
-                <h6>Enable Goals</h6>
-              </div>
-              <div class="col">
-                <input type="checkbox" class="goals" />
-              </div>
-            </div>
-            <div class="row">
-              <div
-                class="col header"
-                title="Allows the user to select the chat box the app should target."
-              >
-                <h6>Select Chat</h6>
-              </div>
-              <div class="col">
-                <select class="chat">
-                  <option value="">Select Chat</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col header" title="Clears material Qty column.">
-                <button
-                  class="nisbutton"
-                  data-type="qty"
-                  name="qty"
-                  data-toggle="collapse"
-                  href="#clearQty"
-                >
-                  ClearQty
-                </button>
-              </div>
-              <div class="col header" title="Clears material Goals column.">
-                <button
-                  class="nisbutton"
-                  data-type="goal"
-                  name="goals"
-                  data-toggle="collapse"
-                  href="#clearGoals"
-                >
-                  ClearGoals
-                </button>
-              </div>
-            </div>
-            <div class="row collapse warning" id="clearQty">
-              <div class="col">
-                <div class="row">
-                  <div class="col text-center">Clear Qty?</div>
-                </div>
-                <div class="row">
-                  <div class="col header">
-                    <button
-                      class="nisbutton clear"
-                      data-type="qty"
-                      data-toggle="collapse"
-                      href="#clearQty"
-                    >
-                      Yes
-                    </button>
-                  </div>
-                  <div class="col">
-                    <button
-                      class="nisbutton"
-                      data-toggle="collapse"
-                      href="#clearQty"
-                    >
-                      No
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row collapse warning" id="clearGoals">
-              <div class="col">
-                <div class="row">
-                  <div class="col text-center">Clear Goals?</div>
-                </div>
-                <div class="row">
-                  <div class="col header">
-                    <button
-                      class="nisbutton clear"
-                      data-type="goal"
-                      data-toggle="collapse"
-                      href="#clearGoals"
-                    >
-                      Yes
-                    </button>
-                  </div>
-                  <div class="col">
-                    <button
-                      class="nisbutton"
-                      data-toggle="collapse"
-                      href="#clearGoals"
-                    >
-                      No
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col header" title="Opens the Artefact calculator.">
-                <button
-                  class="nisbutton openImport"
-                  data-toggle="modal"
-                  data-target="#settings"
-                >
-                  ArtifactCalc
-                </button>
-              </div>
-              <div
-                class="col header"
-                title="Exports the current data as a CSV file."
-              >
-                <button class="nisbutton export">CSV Export</button>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <div class="row">
-                  <div class="col">
-                    <button
-                      class="nisbutton"
-                      data-type="reset"
-                      data-toggle="collapse"
-                      href="#resetApp"
-                    >
-                      Factory Reset
-                    </button>
-                  </div>
-                </div>
-                <div class="row collapse danger" id="resetApp">
-                  <div class="col">
-                    <div class="row">
-                      <div class="col text-center">
-                        This will remove all saved data and set all settings to
-                        default. This is irreversable!
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col header">
-                        <button
-                          class="nisbutton clear"
-                          data-type="reset"
-                          data-toggle="collapse"
-                          href="#resetApp"
-                        >
-                          Yes
-                        </button>
-                      </div>
-                      <div class="col">
-                        <button
-                          class="nisbutton"
-                          data-toggle="collapse"
-                          href="#resetApp"
-                        >
-                          No
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+      <div class="modal-footer">
+        <button id="saveSettingsBtn" type="button">Save Settings</button>
       </div>
     </div>
-  </body>
+  </div>
+</body>
   <script src="scripts/data.js"></script>
   <script src="scripts/script.js"></script>
 </html>
