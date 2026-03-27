@@ -54,9 +54,6 @@ window.setTimeout(function () {
     emptyState: document.getElementById("emptyState"),
     dropsTable: document.getElementById("dropsTable"),
     dropsTableScroll: document.querySelector(".drops-table-scroll"),
-    pendingDropCount: document.getElementById("pendingDropCount"),
-    alertedDropCount: document.getElementById("alertedDropCount"),
-    watchModeSummary: document.getElementById("watchModeSummary"),
     settingsModal: document.getElementById("settingsModal"),
     trackEnabled: document.getElementById("trackEnabled"),
     trackModeAll: document.getElementById("trackModeAll"),
@@ -73,7 +70,6 @@ window.setTimeout(function () {
     setStatus("Searching for chatboxes...");
     wireEvents();
     renderSettingsForm();
-    renderSummary();
     renderTrackedDrops();
     updateRunningUi();
     findChats();
@@ -343,7 +339,6 @@ window.setTimeout(function () {
     pendingDrops.set(entry.id, entry);
     trackedDrops.unshift(stripTimer(entry));
     persistTrackedDrops();
-    renderSummary();
     renderTrackedDrops();
   }
 
@@ -390,7 +385,6 @@ window.setTimeout(function () {
     });
 
     persistTrackedDrops();
-    renderSummary();
     renderTrackedDrops();
   }
 
@@ -411,7 +405,6 @@ window.setTimeout(function () {
 
     sendAlert(entry);
     persistTrackedDrops();
-    renderSummary();
     renderTrackedDrops();
   }
 
@@ -516,7 +509,6 @@ window.setTimeout(function () {
     });
 
     persistTrackedDrops();
-    renderSummary();
     renderTrackedDrops();
     setStatus(`Marked as picked up: ${drop.itemName}`);
   }
@@ -591,23 +583,6 @@ window.setTimeout(function () {
     });
   }
 
-  function renderSummary() {
-    const pendingCount = trackedDrops.filter(function (drop) {
-      return drop.status === "Waiting for pet";
-    }).length;
-
-    const alertedCount = trackedDrops.filter(function (drop) {
-      return drop.status === "Alerted - not picked up";
-    }).length;
-
-    els.pendingDropCount.textContent = String(pendingCount);
-    els.alertedDropCount.textContent = String(alertedCount);
-    els.watchModeSummary.textContent =
-      settings.trackMode === "all"
-        ? "All drops"
-        : `${settings.watchlistItems.length} watched drop(s)`;
-  }
-
   function openSettings() {
     renderSettingsForm();
     els.settingsModal.classList.remove("hidden");
@@ -643,7 +618,6 @@ window.setTimeout(function () {
     };
 
     localStorage.setItem(storageKeys.settings, JSON.stringify(settings));
-    renderSummary();
     renderTrackedDrops();
     closeSettings();
     setStatus("Settings saved.");
@@ -661,7 +635,6 @@ window.setTimeout(function () {
     sessionStorage.removeItem(storageKeys.history);
     localStorage.removeItem(storageKeys.trackedDrops);
 
-    renderSummary();
     renderTrackedDrops();
     setStatus("History cleared.");
   }
