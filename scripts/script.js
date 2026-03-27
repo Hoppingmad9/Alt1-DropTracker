@@ -313,7 +313,7 @@ window.setTimeout(function () {
             : null,
       };
     }
-    console.log("PARSE FAILED:", JSON.stringify(line));
+    // console.log("PARSE FAILED:", JSON.stringify(line));
     return null;
   }
 
@@ -374,14 +374,14 @@ window.setTimeout(function () {
         candidates = amountMatches;
       }
     }
-    console.log("PET PARSED:", parsed);
-    console.log("PENDING DROPS:", Array.from(pendingDrops.values()));
+    // console.log("PET PARSED:", parsed);
+    // console.log("PENDING DROPS:", Array.from(pendingDrops.values()));
     const match = candidates.sort(function (a, b) {
       return a.createdAt - b.createdAt;
     })[0];
 
     if (!match) {
-      console.log("↳ PET pickup found no pending match for:", parsed);
+      // console.log("↳ PET pickup found no pending match for:", parsed);
       return;
     }
 
