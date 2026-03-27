@@ -27,8 +27,7 @@ window.setTimeout(function () {
     colors: [
       A1lib.mixColor(255, 255, 255), // white text
       A1lib.mixColor(60, 183, 30), // green text
-      A1lib.mixColor(255, 203, 5), // gold/yellow drop text
-      A1lib.mixColor(255, 215, 0), // alternate gold
+      A1lib.mixColor(245, 151, 0), // gold/yellow drop text
     ],
     backwards: true,
   };
@@ -190,7 +189,7 @@ window.setTimeout(function () {
 
   function readChatbox() {
     const opts = reader.read() || [];
-		console.log("RAW OPTS:", opts);
+    console.log("RAW OPTS:", opts);
     let chatStr = "";
 
     if (!opts.length) {
