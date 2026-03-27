@@ -1,0 +1,14 @@
+{
+  "appName": "DropPickupWatcher",
+  "description": "Watches RuneScape chat for golden beam drops and alerts when a watched drop is not picked up by your legendary pet.",
+  "appUrl": "./index.html",
+  "configUrl": "./appconfig.json",
+  "iconUrl": "./images/icon.png",
+  "defaultWidth": 420,
+  "defaultHeight": 620,
+  "minWidth": 360,
+  "minHeight": 220,
+  "requestHandlers": [],
+  "activators": [],
+  "permissions": "pixel,gamestate,overlay"
+}
