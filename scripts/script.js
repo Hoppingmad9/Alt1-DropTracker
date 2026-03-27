@@ -26,9 +26,9 @@ window.setTimeout(function () {
   reader.readargs = {
     colors: [
       A1lib.mixColor(255, 255, 255), // white text
-      A1lib.mixColor(60, 183, 30),   // green text
-			A1lib.mixColor(255, 203, 5),   // gold/yellow drop text
-			A1lib.mixColor(255, 215, 0),   // alternate gold
+      A1lib.mixColor(60, 183, 30), // green text
+      A1lib.mixColor(255, 203, 5), // gold/yellow drop text
+      A1lib.mixColor(255, 215, 0), // alternate gold
     ],
     backwards: true,
   };
@@ -116,7 +116,10 @@ window.setTimeout(function () {
       clearInterval(findChatTimer);
       populateChatSelect(reader.pos.boxes);
 
-      const savedIndex = parseInt(localStorage.getItem(storageKeys.selectedChat), 10);
+      const savedIndex = parseInt(
+        localStorage.getItem(storageKeys.selectedChat),
+        10,
+      );
       if (!Number.isNaN(savedIndex) && reader.pos.boxes[savedIndex]) {
         reader.pos.mainbox = reader.pos.boxes[savedIndex];
       } else {
@@ -156,7 +159,7 @@ window.setTimeout(function () {
         chat.mainbox.rect.width,
         chat.mainbox.rect.height,
         2000,
-        5
+        5,
       );
     } catch (error) {
       // overlay not available
@@ -216,47 +219,47 @@ window.setTimeout(function () {
 
     const chatArr = chatStr.trim().split("\n");
 
-		chatArr.forEach(function (rawLine) {
-			const line = rawLine.trim();
-			if (!line) {
-				return;
-			}
+    chatArr.forEach(function (rawLine) {
+      const line = rawLine.trim();
+      if (!line) {
+        return;
+      }
 
-			console.log("CHAT LINE:", line);
+      console.log("CHAT LINE:", line);
 
-			if (isInHistory(line)) {
-				console.log("↳ Skipped (in history)");
-				return;
-			}
+      if (isInHistory(line)) {
+        console.log("↳ Skipped (in history)");
+        return;
+      }
 
-			const parsed = parseChatLine(line);
+      const parsed = parseChatLine(line);
 
-			if (!parsed) {
-				console.log("↳ No match");
-				return;
-			}
+      if (!parsed) {
+        console.log("↳ No match");
+        return;
+      }
 
-			console.log("↳ MATCH:", parsed);
+      console.log("↳ MATCH:", parsed);
 
-			if (parsed.kind === "beam") {
-				console.log("↳ Detected BEAM drop");
-				handleBeamDrop(parsed, line);
-				return;
-			}
+      if (parsed.kind === "beam") {
+        console.log("↳ Detected BEAM drop");
+        handleBeamDrop(parsed, line);
+        return;
+      }
 
-			if (parsed.kind === "pet") {
-				console.log("↳ Detected PET pickup");
-				handlePetPickup(parsed, line);
-			}
-		});
+      if (parsed.kind === "pet") {
+        console.log("↳ Detected PET pickup");
+        handlePetPickup(parsed, line);
+      }
+    });
 
     updateChatHistory(chatArr);
   }
 
   function parseChatLine(line) {
     const beamMatch = line.match(
-			/^\[(\d{2}:\d{2}:\d{2})\]\s+A golden beam shines over one of your items\.\s+You receive:\s+(\d+)(?:\s*x)?\s+(.+?)\.$/i
-		);
+      /^\[(\d{2}:\d{2}:\d{2})\]\s+A golden beam shines over one of your items\.\s+You receive:\s+(\d+)(?:\s*x)?\s+(.+?)\.$/i,
+    );
 
     if (beamMatch) {
       return {
@@ -268,7 +271,7 @@ window.setTimeout(function () {
     }
 
     const petMatch = line.match(
-      /^\[(\d{2}:\d{2}:\d{2})\]\s+Your legendary pet finds:\s+(.+?)\.?$/i
+      /^\[(\d{2}:\d{2}:\d{2})\]\s+Your legendary pet finds:\s+(.+?)\.?$/i,
     );
 
     if (petMatch) {
@@ -310,9 +313,12 @@ window.setTimeout(function () {
       timerId: null,
     };
 
-    entry.timerId = window.setTimeout(function () {
-      markDropAlerted(entry.id);
-    }, Math.max(1, Number(settings.alertSeconds)) * 1000);
+    entry.timerId = window.setTimeout(
+      function () {
+        markDropAlerted(entry.id);
+      },
+      Math.max(1, Number(settings.alertSeconds)) * 1000,
+    );
 
     pendingDrops.set(entry.id, entry);
     trackedDrops.unshift(stripTimer(entry));
@@ -387,7 +393,7 @@ window.setTimeout(function () {
         22,
         200,
         200,
-        4000
+        4000,
       );
     } catch (error) {
       // overlay text not available
@@ -400,7 +406,8 @@ window.setTimeout(function () {
 
   function playAlertSound() {
     try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) {
         return;
       }
@@ -595,13 +602,18 @@ window.setTimeout(function () {
     try {
       const raw = localStorage.getItem(storageKeys.settings);
       if (!raw) {
-        localStorage.setItem(storageKeys.settings, JSON.stringify(defaultSettings));
+        localStorage.setItem(
+          storageKeys.settings,
+          JSON.stringify(defaultSettings),
+        );
         return Object.assign({}, defaultSettings);
       }
 
       const parsed = JSON.parse(raw);
       return Object.assign({}, defaultSettings, parsed, {
-        watchlistItems: Array.isArray(parsed.watchlistItems) ? parsed.watchlistItems : [],
+        watchlistItems: Array.isArray(parsed.watchlistItems)
+          ? parsed.watchlistItems
+          : [],
       });
     } catch (error) {
       return Object.assign({}, defaultSettings);
@@ -618,7 +630,10 @@ window.setTimeout(function () {
   }
 
   function persistTrackedDrops() {
-    localStorage.setItem(storageKeys.trackedDrops, JSON.stringify(trackedDrops));
+    localStorage.setItem(
+      storageKeys.trackedDrops,
+      JSON.stringify(trackedDrops),
+    );
   }
 
   function updateChatHistory(chatArr) {
