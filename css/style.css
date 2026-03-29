@@ -73,7 +73,6 @@ label {
   height: 100vh;
   max-width: 900px;
   margin: 0 auto;
-  padding: 16px;
   display: grid;
   grid-template-rows: 1fr;
   gap: 16px;
