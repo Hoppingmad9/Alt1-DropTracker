@@ -472,7 +472,6 @@ window.setTimeout(function () {
     stopAlertSound();
     persistTrackedDrops();
     renderTrackedDrops();
-    setStatus(`Marked as picked up: ${drop.itemName}`);
   }
 
   function markDropMissed(id) {
@@ -502,12 +501,9 @@ window.setTimeout(function () {
     stopAlertSound();
     persistTrackedDrops();
     renderTrackedDrops();
-    setStatus(`Missed drop: ${entry.itemName}`);
   }
 
   function sendAlert(entry) {
-    setStatus(`Missed pickup: ${entry.itemName}`);
-
     try {
       alt1.overLayTextEx(
         `MISSed PICKUP: ${entry.itemName}`,
